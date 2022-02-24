@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"strict": true,
+		"isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"noImplicitThis": true,
+		"lib": ["ESNext", "DOM"],
+		"outDir": "dist",
+		"target": "ESNext"
+	},
+	"include": ["src/**/*"]
+}
