@@ -26,6 +26,8 @@ function mutable<Value extends any>(initialValue?: Value) {
 						return (callback: Mutable<Value>['onChange']) => {
 							events.on(changeEvent, callback);
 						};
+					case 'valueOf':
+						return () => target.value;
 					default:
 						return target.value;
 				}
