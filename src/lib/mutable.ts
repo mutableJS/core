@@ -12,7 +12,7 @@ export type Mutable<Value> = {
 
 export type MaybeMutable<Value> = Value | Mutable<Value>;
 
-function mutable<Value extends any>(initialValue?: Value) {
+function mutable<Value>(initialValue?: Value) {
 	const events = new EventEmitter();
 
 	const obj = new Proxy(
@@ -45,8 +45,8 @@ function mutable<Value extends any>(initialValue?: Value) {
 	return obj as Mutable<Value>;
 }
 
-export function isMutable(item: any): item is Mutable<any> {
-	return item._mutable;
+export function isMutable(item: MaybeMutable<any>): item is Mutable<any> {
+	return !!item?._mutable;
 }
 
 export default mutable;

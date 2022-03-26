@@ -1,30 +1,32 @@
 import mutableElement from './lib/mutableElement';
-import mutable, { MaybeMutable } from './lib/mutable';
+import mutable from './lib/mutable';
 import mutableFn from './lib/mutableFn';
 
-const setInnerHTML = mutableFn<{
-	target: HTMLElement;
-	body: MaybeMutable<any>;
-}>(({ target, body }) => {
-	target.innerHTML = body;
-});
+const countToString = mutableFn(({ i }) => `${i}`);
+const style = mutableFn<{ i: number }>(({ i }) => `min-width: ${i * 10}px;`);
 
 const root = document.getElementById('root');
 if (root) {
 	const display = document.getElementById('display');
-	const innerHTML = mutable('0');
-	const target = mutableElement('span', { innerHTML });
+
+	const count = mutable(0);
+
+	const target = mutableElement('span', {
+		innerHTML: countToString({ i: count }),
+	});
 
 	display?.append(target);
 
-	// target.mInnerText = i;
-	// setInnerHTML({ target, body: i });
-
-	const button = document.createElement('button');
-	button.innerText = 'Click me';
-	button.onclick = () => {
-		innerHTML.value = (parseInt(innerHTML.value) + 1).toString();
-	};
+	const button = mutableElement('button', {
+		innerText: 'Click me',
+		style: style({ i: count }),
+		onclick() {
+			count.value += 1;
+		},
+	});
+	// button.onclick = () => {
+	// 	count.value += 1;
+	// };
 
 	root.prepend(button);
 }

@@ -1,38 +1,52 @@
-import { isMutable, maybeMutable } from './mutable';
+import { isMutable, MaybeMutable } from './mutable';
 
-[HTMLElement].forEach(
-	(element) =>
-		Object.keys(element.prototype).forEach((key) => {
-			const newKey = `m${key[0].toUpperCase()}${key.substring(1)}`;
+type AllTags = keyof HTMLElementTagNameMap;
 
-			Object.defineProperty(HTMLElement.prototype, newKey, {
-				configurable: false,
-				get() {
-					return this[key];
-				},
-				set(value: maybeMutable<string>) {
-					if (isMutable(value)) {
-						value.onChange((newVal) => {
-							this[key] = newVal;
-						});
-						this[key] = value.value;
-					} else {
-						this[key] = value;
-					}
-				},
-			});
-		}),
-);
+type MutableProps<Tag extends AllTags> = {
+	[Key in keyof HTMLElementTagNameMap[Tag]]?: MaybeMutable<
+		HTMLElementTagNameMap[Tag][Key]
+	>;
+};
 
-function mutableElement<Tag extends keyof HTMLElementTagNameMap>(tag: Tag) {
+function maybeMutableCallback<Data>(
+	data: MaybeMutable<Data>,
+	callback: (data: Data) => void,
+) {
+	if (isMutable(data)) {
+		callback(data.value);
+
+		data.onChange(callback);
+	} else {
+		callback(data);
+	}
+}
+
+function mutableElement<Tag extends AllTags, Props extends MutableProps<Tag>>(
+	tag: Tag,
+	props?: Props,
+) {
+	type ElementKeys = keyof HTMLElementTagNameMap[Tag];
+
 	const element = document.createElement(tag);
 
-	return element as HTMLElementTagNameMap[Tag] & {
-		[Key in string &
-			keyof HTMLElementTagNameMap[Tag] as `m${Capitalize<Key>}`]: maybeMutable<
-			HTMLElementTagNameMap[Tag][Key]
-		>;
-	};
+	if (props) {
+		for (let [key, item] of Object.entries(props)) {
+			switch (key) {
+				case 'style':
+					maybeMutableCallback(item, (data) => {
+						element.setAttribute(key, data);
+					});
+					break;
+				default:
+					maybeMutableCallback(item, (data) => {
+						element[key as ElementKeys] = data;
+					});
+					break;
+			}
+		}
+	}
+
+	return element;
 }
 
 export default mutableElement;
