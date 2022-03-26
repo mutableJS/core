@@ -1,26 +1,26 @@
-import mutable, { isMutable, maybeMutable, Mutable } from "./mutable";
+import mutable, { isMutable, MaybeMutable, Mutable } from "./mutable";
 
-export type mixedParams<Params> = {
+export type MixedParams<Params> = {
 	[K in keyof Params]: Params[K] extends Mutable<infer T>
-		? maybeMutable<T>
+		? MaybeMutable<T>
 		: Params[K];
 };
 
-export type unmutableParams<Params> = {
+export type UnmutableParams<Params> = {
 	[K in keyof Params]: Params[K] extends Mutable<infer T> ? T : Params[K];
 };
 
-function makeParams<Params>(params: mixedParams<Params>) {
+function makeParams<Params>(params: MixedParams<Params>) {
 	return Object.entries(params).reduce((acc, [key, item]) => {
 		acc[key as keyof Params] = isMutable(item) ? item.value : item;
 
 		return acc;
-	}, {} as unmutableParams<Params>);
+	}, {} as UnmutableParams<Params>);
 }
 
 function observeMutables<Params>(
-	params: mixedParams<Params>,
-	callback: (newParams: unmutableParams<Params>) => void,
+	params: MixedParams<Params>,
+	callback: (newParams: UnmutableParams<Params>) => void,
 ) {
 	Object.entries(params).forEach(([key, item], i) => {
 		if (isMutable(item)) {
@@ -34,9 +34,9 @@ function observeMutables<Params>(
 }
 
 function mutableFn<Params extends Record<string, unknown>>(
-	call: (params: unmutableParams<Params>) => any,
+	call: (params: UnmutableParams<Params>) => any,
 ) {
-	return (params: mixedParams<Params>) => {
+	return (params: MixedParams<Params>) => {
 		let out = mutable(call.call(null, makeParams(params)));
 
 		observeMutables(params, (newParams) => {

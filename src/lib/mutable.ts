@@ -10,7 +10,7 @@ export type Mutable<Value> = {
 	value: Value;
 };
 
-export type maybeMutable<Value> = Value | Mutable<Value>;
+export type MaybeMutable<Value> = Value | Mutable<Value>;
 
 function mutable<Value extends any>(initialValue?: Value) {
 	const events = new EventEmitter();
