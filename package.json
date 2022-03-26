@@ -1,7 +1,7 @@
 {
-	"name": "viltrum",
+	"name": "mutera",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Mutable variables and reactive JavaScript function",
 	"main": "index.html",
 	"scripts": {
 		"start": "npx vite",
