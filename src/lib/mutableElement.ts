@@ -2,11 +2,16 @@ import { isMutable, MaybeMutable } from './mutable';
 
 type AllTags = keyof HTMLElementTagNameMap;
 
-type MutableProps<Tag extends AllTags> = {
-	[Key in keyof HTMLElementTagNameMap[Tag]]?: MaybeMutable<
-		HTMLElementTagNameMap[Tag][Key]
-	>;
+type MutableObject<Object> = {
+	[Key in keyof Object]?: MaybeMutable<Object[Key]>;
 };
+
+type MutableProps<Tag extends AllTags> = MutableObject<{
+	innerHTML: HTMLElementTagNameMap[Tag]['innerHTML'];
+	innerText: string;
+	style: string | MutableObject<CSSStyleDeclaration>;
+	onclick: () => void;
+}>;
 
 function maybeMutableCallback<Data>(
 	data: MaybeMutable<Data>,
@@ -30,20 +35,29 @@ function mutableElement<Tag extends AllTags, Props extends MutableProps<Tag>>(
 	const element = document.createElement(tag);
 
 	if (props) {
-		for (let [key, item] of Object.entries(props)) {
-			switch (key) {
-				case 'style':
-					maybeMutableCallback(item, (data) => {
-						element.setAttribute(key, data);
-					});
-					break;
-				default:
-					maybeMutableCallback(item, (data) => {
-						element[key as ElementKeys] = data;
-					});
-					break;
-			}
-		}
+		props.innerHTML &&
+			maybeMutableCallback(props.innerHTML, (data) => {
+				element.innerHTML = data;
+			});
+
+		props.innerText &&
+			maybeMutableCallback(props.innerText, (data) => {
+				element.innerText = data;
+			});
+
+		props.style &&
+			maybeMutableCallback(props.style, (data) => {
+				if (typeof data === 'string') {
+					element.setAttribute('style', data);
+				} else {
+					// element.setAttribute('style', data);
+				}
+			});
+
+		props.onclick &&
+			maybeMutableCallback(props.onclick, (data) => {
+				element.onclick = data;
+			});
 	}
 
 	return element;
