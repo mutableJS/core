@@ -1,32 +1,54 @@
-import mutableElement from './lib/mutableElement';
 import mutable from './lib/mutable';
 import mutableFn from './lib/mutableFn';
+import mutableElement from './lib/mutableElement';
 
-const countToString = mutableFn(({ i }) => `${i}`);
-const style = mutableFn(({ i }: { i: number }) => `min-width: ${i * 10}px;`);
-
+//	App root
 const root = document.getElementById('root');
-if (root) {
-	const display = document.getElementById('display');
 
-	const count = mutable(0);
+//	Mutable variables
+const todos = mutable<string[]>([]);
+const input = mutable<string>('');
 
-	const target = mutableElement('span', {
-		innerHTML: countToString({ i: count }),
-	});
+//	Render function
+const children = mutableFn(({ todos: items }: { todos: string[] }) =>
+	items.map((item, i) =>
+		mutableElement('li', {
+			innerText: item,
+			style: 'cursor: no-drop;',
+			onclick: () => {
+				todos.value.splice(i, 1);
+				todos.value = todos.value;
+			},
+		}),
+	),
+);
 
-	display?.append(target);
-
-	const button = mutableElement('button', {
-		innerText: 'Click me',
-		style: style({ i: count }),
-		onclick() {
-			count.value += 1;
+//	Add elements to app
+root?.appendChild(
+	mutableElement('input', {
+		children: input,
+		onchange: (event) => {
+			if (event.target instanceof HTMLInputElement) {
+				input.value = event.target.value;
+			}
 		},
-	});
-	// button.onclick = () => {
-	// 	count.value += 1;
-	// };
+	}),
+);
 
-	root.prepend(button);
-}
+root?.appendChild(
+	mutableElement('button', {
+		innerText: 'Add todo',
+		onclick() {
+			todos.value.push(input.value);
+			todos.value = todos.value;
+
+			input.value = '';
+		},
+	}),
+);
+
+root?.appendChild(
+	mutableElement('ul', {
+		children: children({ todos }),
+	}),
+);
