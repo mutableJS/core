@@ -3,7 +3,7 @@ import mutable from './lib/mutable';
 import mutableFn from './lib/mutableFn';
 
 const countToString = mutableFn(({ i }) => `${i}`);
-const style = mutableFn<{ i: number }>(({ i }) => `min-width: ${i * 10}px;`);
+const style = mutableFn(({ i }: { i: number }) => `min-width: ${i * 10}px;`);
 
 const root = document.getElementById('root');
 if (root) {
