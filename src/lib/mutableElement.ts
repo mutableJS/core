@@ -8,9 +8,13 @@ type MutableObject<Object> = {
 
 type MutableProps<Tag extends AllTags> = MutableObject<{
 	innerHTML: HTMLElementTagNameMap[Tag]['innerHTML'];
+	children: HTMLElementTagNameMap[Tag] extends HTMLInputElement
+		? string
+		: Parameters<HTMLElementTagNameMap[Tag]['replaceChildren']>;
 	innerText: string;
 	style: string | MutableObject<CSSStyleDeclaration>;
-	onclick: () => void;
+	onclick: HTMLElement['onclick'];
+	onchange: HTMLInputElement['onkeyup'];
 }>;
 
 function maybeMutableCallback<Data>(
@@ -40,6 +44,15 @@ function mutableElement<Tag extends AllTags, Props extends MutableProps<Tag>>(
 				element.innerHTML = data;
 			});
 
+		props.children &&
+			maybeMutableCallback(props.children, (data) => {
+				if (element instanceof HTMLInputElement) {
+					element.value = data.toString();
+				} else {
+					element.replaceChildren(...data);
+				}
+			});
+
 		props.innerText &&
 			maybeMutableCallback(props.innerText, (data) => {
 				element.innerText = data;
@@ -57,6 +70,11 @@ function mutableElement<Tag extends AllTags, Props extends MutableProps<Tag>>(
 		props.onclick &&
 			maybeMutableCallback(props.onclick, (data) => {
 				element.onclick = data;
+			});
+
+		props.onchange &&
+			maybeMutableCallback(props.onchange, (data) => {
+				element.onkeyup = data;
 			});
 	}
 
