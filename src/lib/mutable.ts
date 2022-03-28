@@ -12,11 +12,20 @@ export type Mutable<Value> = {
 
 export type MaybeMutable<Value> = Value | Mutable<Value>;
 
-function mutable<Value>(initialValue?: Value) {
+function mutable<Value extends any>(initialValue?: Value) {
 	const events = new EventEmitter();
 
 	const obj = new Proxy(
-		{ value: initialValue },
+		{
+			value:
+				initialValue && typeof initialValue === 'object'
+					? mutableObject(
+							initialValue as object | unknown[],
+							(newVal, oldVal) =>
+								events.emit(changeEvent, newVal, oldVal),
+					  )
+					: initialValue,
+		},
 		{
 			get(target, prop) {
 				switch (prop) {
@@ -26,8 +35,6 @@ function mutable<Value>(initialValue?: Value) {
 						return (callback: Mutable<Value>['onChange']) => {
 							events.on(changeEvent, callback);
 						};
-					case 'valueOf':
-						return () => target.value;
 					default:
 						return target.value;
 				}
@@ -47,6 +54,62 @@ function mutable<Value>(initialValue?: Value) {
 
 export function isMutable(item: MaybeMutable<any>): item is Mutable<any> {
 	return !!item?._mutable;
+}
+
+let actionCache: { type?: 'lenMod' | 'sort'; oldVal?: any } = {};
+
+function mutableObject<Obj extends object | unknown[]>(
+	initialValue: Obj,
+	onChange: (newVal: Obj, oldVal: null) => void,
+): Obj {
+	const isArray = Array.isArray(initialValue);
+
+	const proxy = new Proxy(initialValue, {
+		get(target, prop) {
+			if (isArray) {
+				switch (prop) {
+					case 'sort':
+						actionCache = { type: 'sort' };
+						break;
+					case 'push':
+					case 'pop':
+					case 'shift':
+					case 'unshift':
+					case 'splice':
+						actionCache = { type: 'lenMod' };
+						break;
+				}
+			}
+
+			const item = target[prop as keyof Obj];
+
+			return item;
+		},
+		set(target, prop, value) {
+			target[prop as keyof Obj] = value;
+
+			if (
+				!actionCache.type ||
+				(actionCache.type === 'lenMod' && prop === 'length') ||
+				(actionCache.type === 'sort' &&
+					prop === ((target as unknown[]).length - 1).toString())
+			) {
+				onChange(target, null);
+
+				actionCache = {};
+			}
+
+			return true;
+		},
+		deleteProperty(target, prop) {
+			delete target[prop as keyof Obj];
+			onChange(target, null);
+
+			return true;
+		},
+	});
+
+	return proxy;
 }
 
 export default mutable;
