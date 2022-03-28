@@ -10,21 +10,26 @@ const todos = mutable<string[]>([]);
 const input = mutable<string>('');
 
 //	Render function
+const todoCount = mutableFn(({ todos }: { todos: string[] }) => [
+	`Todos: ${todos.length}`,
+]);
 const children = mutableFn(({ todos: items }: { todos: string[] }) =>
 	items.map((item, i) =>
 		mutableElement('li', {
 			innerText: item,
-			style: 'cursor: no-drop;',
+			style: 'cursor: no-drop; user-select: none;',
 			onclick: () => {
 				todos.value.splice(i, 1);
-				todos.value = todos.value;
 			},
 		}),
 	),
 );
 
 //	Add elements to app
-root?.appendChild(
+root?.append(
+	mutableElement('div', {
+		children: todoCount({ todos }),
+	}),
 	mutableElement('input', {
 		children: input,
 		onchange: (event) => {
@@ -33,21 +38,14 @@ root?.appendChild(
 			}
 		},
 	}),
-);
-
-root?.appendChild(
 	mutableElement('button', {
 		innerText: 'Add todo',
 		onclick() {
 			todos.value.push(input.value);
-			todos.value = todos.value;
 
 			input.value = '';
 		},
 	}),
-);
-
-root?.appendChild(
 	mutableElement('ul', {
 		children: children({ todos }),
 	}),
