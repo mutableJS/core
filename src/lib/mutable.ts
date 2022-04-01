@@ -12,7 +12,7 @@ export type Mutable<Value> = {
 
 export type MaybeMutable<Value> = Value | Mutable<Value>;
 
-function mutable<Value extends any>(initialValue?: Value) {
+export function mutable<Value extends any>(initialValue?: Value) {
 	const events = new EventEmitter();
 
 	const obj = new Proxy(
@@ -56,13 +56,12 @@ export function isMutable(item: MaybeMutable<any>): item is Mutable<any> {
 	return !!item?._mutable;
 }
 
-let actionCache: { type?: 'lenMod' | 'sort'; oldVal?: any } = {};
-
 function mutableObject<Obj extends object | unknown[]>(
 	initialValue: Obj,
 	onChange: (newVal: Obj, oldVal: null) => void,
 ): Obj {
 	const isArray = Array.isArray(initialValue);
+	let actionCache: { type?: 'lenMod' | 'sort'; oldVal?: any } = {};
 
 	const proxy = new Proxy(initialValue, {
 		get(target, prop) {

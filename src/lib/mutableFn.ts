@@ -20,7 +20,7 @@ function convertParams<Params>(params: MaybeMutableParams<Params>) {
 	return out;
 }
 
-function mutableFn<
+export function mutableFn<
 	Params extends Record<string, unknown>,
 	ReturnType extends any,
 >(func: (params: UnmutableParams<Params>) => ReturnType) {
