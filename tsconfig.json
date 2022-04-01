@@ -13,5 +13,6 @@
 		"target": "ESNext",
 		"types": ["node"]
 	},
-	"include": ["src/**/*"]
+	"include": ["src/lib/index.ts"],
+	"exclude": ["dist", "node_modules"]
 }

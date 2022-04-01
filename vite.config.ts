@@ -6,8 +6,8 @@ export default defineConfig({
 		lib: {
 			entry: path.resolve(__dirname, 'src/lib/index.ts'),
 			fileName: 'index',
-			formats: ['umd', 'cjs', 'es'],
-			name: 'mutation-test',
+			formats: ['umd', 'es'],
+			name: '@mutable/core',
 		},
 		minify: false,
 	},
