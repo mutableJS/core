@@ -17,7 +17,7 @@ const log = {
 
 		const div = document.createElement('div');
 		div.innerHTML =
-			JSON.stringify(input, null, 4).replaceAll(' ', '&nbsp;') +
+			JSON.stringify(input, null, 4).replace(/ /g, '&nbsp;') +
 			'<br />=================';
 		body.appendChild(div);
 	}),
