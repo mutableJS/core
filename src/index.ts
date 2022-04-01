@@ -1,52 +1,63 @@
 import mutable from './lib/mutable';
 import mutableFn from './lib/mutableFn';
-import mutableElement from './lib/mutableElement';
 
-//	App root
-const root = document.getElementById('root');
+const body = document.body;
 
-//	Mutable variables
-const todos = mutable<string[]>([]);
-const input = mutable<string>('');
+const log = {
+	label(label: string) {
+		console.log('\t', label);
 
-//	Render function
-const todoCount = mutableFn(({ todos }: { todos: string[] }) => [
-	`Todos: ${todos.length}`,
-]);
-const children = mutableFn(({ todos: items }: { todos: string[] }) =>
-	items.map((item, i) =>
-		mutableElement('li', {
-			innerText: item,
-			style: 'cursor: no-drop; user-select: none;',
-			onclick: () => {
-				todos.value.splice(i, 1);
-			},
-		}),
-	),
-);
+		const div = document.createElement('div');
+		div.innerHTML = '&nbsp;'.repeat(4) + label;
+		body.appendChild(div);
+	},
+	change: mutableFn(({ input }) => {
+		console.log(input);
+		console.log('=================');
 
-//	Add elements to app
-root?.append(
-	mutableElement('div', {
-		children: todoCount({ todos }),
+		const div = document.createElement('div');
+		div.innerHTML =
+			JSON.stringify(input, null, 4).replaceAll(' ', '&nbsp;') +
+			'<br />=================';
+		body.appendChild(div);
 	}),
-	mutableElement('input', {
-		children: input,
-		onchange: (event) => {
-			if (event.target instanceof HTMLInputElement) {
-				input.value = event.target.value;
-			}
-		},
-	}),
-	mutableElement('button', {
-		innerText: 'Add todo',
-		onclick() {
-			todos.value.push(input.value);
+};
 
-			input.value = '';
-		},
-	}),
-	mutableElement('ul', {
-		children: children({ todos }),
-	}),
-);
+log.label('<------- Array ------->');
+const arr = mutable([1, 2, 3]);
+
+log.label('\tinitial value');
+
+log.change({ input: arr }); // <- being rerun on mutation
+
+log.label('\tpush 7');
+arr.value.push(7);
+
+log.label('\tsplice 1, 1');
+arr.value.splice(1, 1);
+
+log.label('\tset 0 33');
+arr.value[0] = 33;
+
+log.label('\tsort');
+arr.value.sort();
+
+log.label('\tdelete 0');
+delete arr.value[0];
+
+log.label('\n<------- Object ------->');
+const obj = mutable<Record<string, unknown>>({
+	a: 'a',
+	b: 'b',
+	c: 'c',
+	d: 'd',
+});
+
+log.label('\tinitial value');
+
+log.change({ input: obj }); // <- being rerun on mutation
+
+log.label('\tset a');
+obj.value.a = 'x';
+log.label('\tdelete c');
+delete obj.value.c;
