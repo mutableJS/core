@@ -1,6 +1,6 @@
 {
 	"name": "@mutablejs/core",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Mutable state, with reactive functions - automatic result recalculations on state changes",
 	"keywords": [
 		"mutable state",
@@ -33,7 +33,7 @@
 	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/donnikitos/derivi-core"
+		"url": "https://github.com/mutableJS/core"
 	},
 	"license": "MIT",
 	"devDependencies": {
