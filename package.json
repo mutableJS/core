@@ -1,7 +1,18 @@
 {
-	"name": "@flui/core",
-	"version": "0.0.63",
-	"description": "Mutable variables and reactive JavaScript function",
+	"name": "@mutablejs/core",
+	"version": "0.1.0",
+	"description": "Mutable state, with reactive functions - automatic result recalculations on state changes",
+	"keywords": [
+		"mutable state",
+		"reactive functions",
+		"variables",
+		"reactivity",
+		"javascript",
+		"typescript",
+		"mutability",
+		"rerendering",
+		"recalculating"
+	],
 	"files": [
 		"dist"
 	],
@@ -22,7 +33,7 @@
 	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/donnikitos/flui-core"
+		"url": "https://github.com/donnikitos/derivi-core"
 	},
 	"license": "MIT",
 	"devDependencies": {
