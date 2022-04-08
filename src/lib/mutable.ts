@@ -1,16 +1,7 @@
 import { EventEmitter } from 'events';
+import { Mutable } from './types';
 
 const changeEvent = 'onChange';
-
-export type Mutable<Value> = {
-	readonly _mutable: true;
-	readonly onChange: (
-		callback: (newVal: Value, oldVal: Value) => void,
-	) => void;
-	value: Value;
-};
-
-export type MaybeMutable<Value> = Value | Mutable<Value>;
 
 export function mutable<Value extends any>(initialValue?: Value) {
 	const events = new EventEmitter();
@@ -50,10 +41,6 @@ export function mutable<Value extends any>(initialValue?: Value) {
 	);
 
 	return obj as Mutable<Value>;
-}
-
-export function isMutable(item: MaybeMutable<any>): item is Mutable<any> {
-	return !!item?._mutable;
 }
 
 function mutableObject<Obj extends object | unknown[]>(

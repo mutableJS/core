@@ -1,15 +1,13 @@
-import mutable, { isMutable, MaybeMutable, Mutable } from './mutable';
-
-export type UnmutableParams<Params> = {
-	[K in keyof Params]: Params[K] extends Mutable<infer T> ? T : Params[K];
-};
+import { MaybeMutable } from './types';
+import mutable from './mutable';
+import isMutable from './isMutable';
 
 type MaybeMutableParams<Params> = {
 	[K in keyof Params]: MaybeMutable<Params[K]>;
 };
 
 function convertParams<Params>(params: MaybeMutableParams<Params>) {
-	const out = {} as UnmutableParams<Params>;
+	const out = {} as Params;
 
 	for (let key in params) {
 		const item = params[key];
@@ -23,9 +21,9 @@ function convertParams<Params>(params: MaybeMutableParams<Params>) {
 export function mutableFn<
 	Params extends Record<string, unknown>,
 	ReturnType extends any,
->(func: (params: UnmutableParams<Params>) => ReturnType) {
+>(actionFn: (params: Params) => ReturnType) {
 	return (params: MaybeMutableParams<Params>) => {
-		let out = mutable(func.call(null, convertParams(params)));
+		let out = mutable(actionFn(convertParams(params)));
 
 		for (let key in params) {
 			const item = params[key];
@@ -34,10 +32,7 @@ export function mutableFn<
 				item.onChange((newVal) => {
 					const newParams = { ...params, [key]: newVal };
 
-					out.value = func.call(
-						null,
-						convertParams<Params>(newParams),
-					);
+					out.value = actionFn(convertParams<Params>(newParams));
 				});
 			}
 		}

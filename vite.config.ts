@@ -7,7 +7,7 @@ export default defineConfig({
 			entry: path.resolve(__dirname, 'src/lib/index.ts'),
 			fileName: 'index',
 			formats: ['umd', 'es'],
-			name: '@mutable/core',
+			name: '@mutablejs/core',
 		},
 		minify: false,
 	},
