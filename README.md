@@ -2,7 +2,7 @@
 
 Mutable state, with reactive functions - automatic result recalculations on state changes
 
-[![npm](https://img.shields.io/npm/dw/@mutablejs/core?style=for-the-badge)](https://www.npmjs.com/package/@mutablejs/core) [![GitHub](https://img.shields.io/github/license/mutablejs/core?color=blue&style=for-the-badge)](https://github.com/mutableJS/core/blob/master/LICENSE)
+[![npm](https://img.shields.io/npm/dt/@mutablejs/core?style=for-the-badge)](https://www.npmjs.com/package/@mutablejs/core) ![GitHub Repo stars](https://img.shields.io/github/stars/mutablejs/core?label=GitHub%20Stars&style=for-the-badge) [![GitHub](https://img.shields.io/github/license/mutablejs/core?color=blue&style=for-the-badge)](https://github.com/mutableJS/core/blob/master/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mutablejs/core?style=for-the-badge) [![Issues](https://img.shields.io/github/issues/mutableJS/core?style=for-the-badge)](https://github.com/mutableJS/core/issues)
 
 ## FAQ
@@ -15,6 +15,9 @@ on variables mutability has started and developed into the current reactive exec
 #### Is it ready to use?
 
 At the current stage mutableJS is in research stage and can (thought to) be used with the `@mutablejs/dom` package.
+#### Accompanying packages?
+
+Currently there is 1 more package: [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) and 1 more repo: [mutableJS / Demo repo](https://github.com/mutableJS/demo).
 
 ## Installation
 
