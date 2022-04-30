@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { Mutable } from './types';
+import isRegularObject from './utils/isRegularObject';
 
 const changeEvent = 'onChange';
 
@@ -9,11 +10,9 @@ export function mutable<Value extends any>(initialValue?: Value) {
 	const obj = new Proxy(
 		{
 			value:
-				initialValue && typeof initialValue === 'object'
-					? mutableObject(
-							initialValue as object | unknown[],
-							(newVal, oldVal) =>
-								events.emit(changeEvent, newVal, oldVal),
+				isRegularObject(initialValue) || Array.isArray(initialValue)
+					? mutableObject(initialValue, (newVal, oldVal) =>
+							events.emit(changeEvent, newVal, oldVal),
 					  )
 					: initialValue,
 		},
@@ -30,7 +29,7 @@ export function mutable<Value extends any>(initialValue?: Value) {
 						return target.value;
 				}
 			},
-			set(target, prop, value) {
+			set(...[target, , value]) {
 				events.emit(changeEvent, value, target.value);
 
 				target.value = value;
