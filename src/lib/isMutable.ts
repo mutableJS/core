@@ -1,7 +1,7 @@
-import { MaybeMutable, Mutable } from "./types";
+import { Mutable } from './types';
 
-export function isMutable(item: MaybeMutable<any>): item is Mutable<any> {
-	return !!item?._mutable;
+export function isMutable(item: any): item is Mutable<any> {
+	return item?._mutable === true;
 }
 
 export default isMutable;
