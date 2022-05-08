@@ -3,6 +3,8 @@ import mutable from './mutable';
 import isMutable from './isMutable';
 import isRegularObject from './utils/isRegularObject';
 
+// TBD: add non deep types
+
 type MaybeMutableParams<Params extends any[]> = {
 	[K in keyof Params]: Params[K] extends Mutable<any>
 		? Params[K]
@@ -14,6 +16,8 @@ type MaybeMutableParams<Params extends any[]> = {
 		? MaybeMutable<T>[]
 		: MaybeMutable<Params[K]>;
 };
+
+// TBD: add non deep types
 
 function convertParams<Params extends any[]>(
 	params: MaybeMutableParams<Params>,
@@ -45,9 +49,11 @@ function convertParams<Params extends any[]>(
 export function mutableFn<Params extends any[], ReturnType>(
 	actionFn: (...params: Params) => ReturnType,
 ) {
+	let watchAll = false;
+
 	type CallParams = MaybeMutableParams<Params>;
 
-	return (...params: CallParams): Mutable<ReturnType> => {
+	function runner(...params: CallParams): Mutable<ReturnType> {
 		let out = mutable(actionFn.apply(null, convertParams(params)));
 
 		function update(newParams: CallParams) {
@@ -62,7 +68,10 @@ export function mutableFn<Params extends any[], ReturnType>(
 
 					update(newParams as CallParams);
 				});
-			} else if (typeof arg === 'object') {
+			} else if (
+				((!watchAll && i === 0 && params.length === 1) || watchAll) &&
+				typeof arg === 'object'
+			) {
 				Object.entries(arg).forEach(([key, item]) => {
 					if (isMutable(item)) {
 						item.onChange((newVal) => {
@@ -77,7 +86,15 @@ export function mutableFn<Params extends any[], ReturnType>(
 		});
 
 		return out;
+	}
+
+	runner.watchAll = () => {
+		watchAll = true;
+
+		return runner;
 	};
+
+	return runner;
 }
 
 export default mutableFn;
