@@ -11,8 +11,8 @@ const log = {
 		div.innerHTML = '&nbsp;'.repeat(4) + label;
 		body.appendChild(div);
 	},
-	change: mutableFn(({ input }) => {
-		console.log(input);
+	change: mutableFn((...input: any[]) => {
+		console.log(...input);
 		console.log('=================');
 
 		const div = document.createElement('div');
@@ -23,12 +23,15 @@ const log = {
 	}),
 };
 
+//
+// Array modifications
+//
 log.label('<------- Array ------->');
 const arr = mutable([1, 2, 3]);
 
 log.label('\tinitial value');
 
-log.change({ input: arr }); // <- being rerun on mutation
+log.change(arr); // <- being rerun on mutation
 
 log.label('\tpush 7');
 arr.value.push(7);
@@ -45,7 +48,11 @@ arr.value.sort();
 log.label('\tdelete 0');
 delete arr.value[0];
 
-log.label('\n<------- Object ------->');
+//
+// Object modifications
+//
+log.label('');
+log.label('<------- Object ------->');
 const obj = mutable<Record<string, unknown>>({
 	a: 'a',
 	b: 'b',
@@ -55,9 +62,31 @@ const obj = mutable<Record<string, unknown>>({
 
 log.label('\tinitial value');
 
-log.change({ input: obj }); // <- being rerun on mutation
+log.change(obj); // <- being rerun on mutation
 
 log.label('\tset a');
 obj.value.a = 'x';
+
 log.label('\tdelete c');
 delete obj.value.c;
+
+//
+// Named parameter function
+//
+log.label('');
+log.label('<------- Named parameter function ------->');
+const mutString = mutable('Hello');
+
+const withNamedParams = mutableFn(({ mutString }: { mutString: string }) => {
+	log.change(mutString);
+
+	console.log(mutString);
+});
+
+log.label('\tinitial value');
+
+withNamedParams({ mutString });
+
+log.label('\tupdate');
+
+mutString.value += ' World';
