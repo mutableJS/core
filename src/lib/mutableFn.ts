@@ -2,6 +2,13 @@ import { MaybeMutable, Mutable } from './types';
 import mutable from './mutable';
 import isMutable from './isMutable';
 
+type MaybeMutableTuple<Input extends [...any[]]> = Input extends [
+	infer First,
+	...infer Rest,
+]
+	? [MaybeMutable<First>, ...MaybeMutableTuple<Rest>]
+	: Input;
+
 type MaybeMutableParams<Params extends any[]> = {
 	[K in keyof Params]: Params[K] extends Mutable<any>
 		? Params[K]
@@ -9,8 +16,8 @@ type MaybeMutableParams<Params extends any[]> = {
 		? MaybeMutable<{
 				[OK in keyof Params[K]]: MaybeMutable<Params[K][OK]>;
 		  }>
-		: Params[K] extends Array<infer T>
-		? MaybeMutable<T>[]
+		: Params[K] extends [...any[]]
+		? MaybeMutable<MaybeMutableTuple<Params[K]>>
 		: MaybeMutable<Params[K]>;
 };
 
