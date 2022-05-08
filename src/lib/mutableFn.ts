@@ -1,7 +1,6 @@
 import { MaybeMutable, Mutable } from './types';
 import mutable from './mutable';
 import isMutable from './isMutable';
-import isRegularObject from './utils/isRegularObject';
 
 type MaybeMutableParams<Params extends any[]> = {
 	[K in keyof Params]: Params[K] extends Mutable<any>
@@ -15,31 +14,26 @@ type MaybeMutableParams<Params extends any[]> = {
 		: MaybeMutable<Params[K]>;
 };
 
-function convertParams<Params extends any[]>(
+function purifyParams<Params extends any[]>(
 	params: MaybeMutableParams<Params>,
 ) {
-	const converted = [] as any[];
+	const pure = [] as any[];
 
-	params.forEach((item, i) => {
-		if (isMutable(item)) {
-			converted[i] = item.value;
-		} else if (isRegularObject(item)) {
-			const objectParam = Object.entries(item).reduce(
-				(acc, [key, value]) => {
-					acc[key] = isMutable(value) ? value.value : value;
+	params.forEach((arg, i) => {
+		if (isMutable(arg)) {
+			pure[i] = arg.value;
+		} else if (typeof arg === 'object') {
+			pure[i] = Array.isArray(arg) ? [] : {};
 
-					return acc;
-				},
-				{} as Record<string, unknown>,
-			);
-
-			converted[i] = objectParam;
+			Object.entries(arg).forEach(([key, item]) => {
+				pure[i][key] = isMutable(item) ? item.value : item;
+			});
 		} else {
-			converted[i] = item;
+			pure[i] = arg;
 		}
 	});
 
-	return converted as Params;
+	return pure as Params;
 }
 
 export function mutableFn<Params extends any[], ReturnType>(
@@ -48,10 +42,10 @@ export function mutableFn<Params extends any[], ReturnType>(
 	type CallParams = MaybeMutableParams<Params>;
 
 	return (...params: CallParams): Mutable<ReturnType> => {
-		let out = mutable(actionFn.apply(null, convertParams(params)));
+		let out = mutable(actionFn.apply(null, purifyParams(params)));
 
 		function update(newParams: CallParams) {
-			out.value = actionFn.apply(null, convertParams(newParams));
+			out.value = actionFn.apply(null, purifyParams(newParams));
 		}
 
 		params.forEach((arg, i) => {
@@ -63,11 +57,14 @@ export function mutableFn<Params extends any[], ReturnType>(
 					update(newParams as CallParams);
 				});
 			} else if (typeof arg === 'object') {
+				const isArray = Array.isArray(arg);
+
 				Object.entries(arg).forEach(([key, item]) => {
 					if (isMutable(item)) {
 						item.onChange((newVal) => {
 							const newParams = [...params];
-							newParams[i] = { ...arg, [key]: newVal };
+							newParams[i] = isArray ? [...arg] : { ...arg };
+							newParams[i][key] = newVal;
 
 							update(newParams as CallParams);
 						});
