@@ -15,6 +15,7 @@ on variables mutability has started and developed into the current reactive exec
 #### Is it ready to use?
 
 At the current stage mutableJS is in research stage and can (thought to) be used with the `@mutablejs/dom` package.
+
 #### Accompanying packages?
 
 Currently there is 1 more package: [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) and 1 more repo: [mutableJS / Demo repo](https://github.com/mutableJS/demo).
@@ -43,15 +44,28 @@ Currently our `mutables()` initial values support:
 
 All the usual getters/ setters/ operations work, as they would work in VanillaJS:
 
-```
+```javascript
 import mutable from '@mutablejs/core';
 
 const someMutableCounter = mutable(0);
 
-someMutableCounter.value += 1;             // someMutableCounter.value equals to 1
+someMutableCounter.value += 1; // someMutableCounter.value equals to 1
 someMutableCounter.value += 1;
 
-console.log(someMutableCounter.value);     // Console output is `2`
+console.log(someMutableCounter.value); // Console output is `2`
+```
+
+`mutableFn()` accepts and reacts to named and unnamed parameters:
+
+```typescript
+import { mutableFn } from '@mutablejs/core';
+
+type NamedParams = { paramA: string; paramB: number };
+const withNamedParams = mutableFn(({ paramA, paramB }: NamedParams) =>
+	console.log(paramA, paramB),
+);
+
+const unNamedParams = mutableFn((a: number, b: boolean) => console.log(a, b));
 ```
 
 ## Usage/Examples
