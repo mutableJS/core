@@ -28,9 +28,11 @@ export function mutable<Value extends any>(initialValue?: Value) {
 				}
 			},
 			set(...[target, , value]) {
-				events.change(value, target.value);
+				if (value !== target.value) {
+					events.change(value, target.value);
 
-				target.value = value;
+					target.value = value;
+				}
 
 				return true;
 			},
