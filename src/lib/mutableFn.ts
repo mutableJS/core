@@ -51,30 +51,24 @@ export function mutableFn<Params extends any[], ReturnType>(
 	return (...params: CallParams): Mutable<ReturnType> => {
 		let out = mutable(actionFn.apply(null, purifyParams(params)));
 
-		function update(newParams: CallParams) {
-			out.value = actionFn.apply(null, purifyParams(newParams));
+		const clonedParams = [] as unknown as CallParams;
+		function rerun() {
+			const pureParams = purifyParams(clonedParams);
+
+			out.value = actionFn.apply(null, pureParams);
 		}
 
 		params.forEach((arg, i) => {
+			clonedParams[i] = arg;
+
 			if (isMutable(arg)) {
-				arg.onChange((newVal) => {
-					const newParams = [...params];
-					newParams[i] = newVal;
-
-					update(newParams as CallParams);
-				});
+				arg.onChange(rerun);
 			} else if (typeof arg === 'object') {
-				const isArray = Array.isArray(arg);
-
 				Object.entries(arg).forEach(([key, item]) => {
-					if (isMutable(item)) {
-						item.onChange((newVal) => {
-							const newParams = [...params];
-							newParams[i] = isArray ? [...arg] : { ...arg };
-							newParams[i][key] = newVal;
+					clonedParams[i][key] = item;
 
-							update(newParams as CallParams);
-						});
+					if (isMutable(item)) {
+						item.onChange(rerun);
 					}
 				});
 			}

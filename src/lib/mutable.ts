@@ -28,10 +28,11 @@ export function mutable<Value extends any>(initialValue?: Value) {
 				}
 			},
 			set(...[target, , value]) {
-				if (value !== target.value) {
-					events.change(value, target.value);
+				const prevValue = target.value;
 
+				if (value !== prevValue) {
 					target.value = value;
+					events.change(value, prevValue);
 				}
 
 				return true;
