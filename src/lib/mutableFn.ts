@@ -21,58 +21,48 @@ type MaybeMutableParams<Params extends any[]> = {
 		: MaybeMutable<Params[K]>;
 };
 
-function purifyParams<Params extends any[]>(
-	params: MaybeMutableParams<Params>,
-) {
-	const pure = [] as any[];
-
-	params.forEach((arg, i) => {
-		if (isMutable(arg)) {
-			pure[i] = arg.value;
-		} else if (typeof arg === 'object') {
-			pure[i] = Array.isArray(arg) ? [] : {};
-
-			Object.entries(arg).forEach(([key, item]) => {
-				pure[i][key] = isMutable(item) ? item.value : item;
-			});
-		} else {
-			pure[i] = arg;
-		}
-	});
-
-	return pure as Params;
-}
-
 export function mutableFn<Params extends any[], ReturnType>(
 	actionFn: (...params: Params) => ReturnType,
 ) {
 	type CallParams = MaybeMutableParams<Params>;
 
 	return (...params: CallParams): Mutable<ReturnType> => {
-		let out = mutable(actionFn.apply(null, purifyParams(params)));
-
-		const clonedParams = [] as unknown as CallParams;
-		function rerun() {
-			const pureParams = purifyParams(clonedParams);
-
-			out.value = actionFn.apply(null, pureParams);
-		}
-
+		const pureParams = [] as unknown as Params;
 		params.forEach((arg, i) => {
-			clonedParams[i] = arg;
-
 			if (isMutable(arg)) {
-				arg.onChange(rerun);
-			} else if (typeof arg === 'object') {
-				Object.entries(arg).forEach(([key, item]) => {
-					clonedParams[i][key] = item;
+				arg.onChange((newVal) => {
+					pureParams[i] = newVal;
 
+					rerun();
+				});
+
+				pureParams[i] = arg.value;
+			} else if (typeof arg === 'object') {
+				pureParams[i] = Array.isArray(arg) ? [] : {};
+
+				Object.entries(arg).forEach(([key, item]) => {
 					if (isMutable(item)) {
-						item.onChange(rerun);
+						item.onChange((newVal) => {
+							pureParams[i][key] = newVal;
+
+							rerun();
+						});
+
+						pureParams[i][key] = item.value;
+					} else {
+						pureParams[i][key] = item;
 					}
 				});
+			} else {
+				pureParams[i] = arg;
 			}
 		});
+
+		let out = mutable(actionFn.apply(null, pureParams));
+
+		function rerun() {
+			out.value = actionFn.apply(null, pureParams);
+		}
 
 		return out;
 	};
