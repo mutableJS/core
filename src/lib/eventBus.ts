@@ -1,15 +1,15 @@
 // TBD: Events clean up needed?
 
-type MutationEventCallback = (newVal: any, oldVal: any) => void;
+export type MutationCallback<Value = any> = (newVal: Value, oldVal: Value) => void;
 
 function eventBus() {
-	const refs: MutationEventCallback[] = [];
+	const refs: MutationCallback[] = [];
 
-	const change: MutationEventCallback = (...data) => {
+	const change: MutationCallback = (...data) => {
 		refs.forEach((fn) => fn(...data));
 	};
 
-	const changeHandler = (callback: MutationEventCallback) => {
+	const changeHandler = (callback: MutationCallback) => {
 		refs.push(callback);
 	};
 
