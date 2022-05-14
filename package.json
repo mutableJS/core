@@ -1,6 +1,6 @@
 {
 	"name": "@mutablejs/core",
-	"version": "0.1.8",
+	"version": "0.1.81",
 	"description": "Mutable state, with reactive functions - automatic recalculations on state changes",
 	"keywords": [
 		"mutable state",
