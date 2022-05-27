@@ -1,18 +1,25 @@
 import { Mutable } from './types';
-import isRegularObject from './utils/isRegularObject';
+import isMutableObjectValue from './utils/isMutableObjectValue';
 import eventBus from './eventBus';
+import mutableFn from './mutableFn';
 
 export function mutable<Value extends any>(initialValue?: Value) {
 	const events = eventBus();
 
+	const isMutableObject = isMutableObjectValue(initialValue);
+	const valueType = isMutableObjectValue(initialValue)
+		? Array.isArray(initialValue)
+			? 'array'
+			: 'object'
+		: 'primitive';
+
 	const obj = new Proxy(
 		{
-			value:
-				isRegularObject(initialValue) || Array.isArray(initialValue)
-					? mutableObject(initialValue, (newVal, oldVal) =>
-							events.change(newVal, oldVal),
-					  )
-					: initialValue,
+			value: isMutableObject
+				? mutableObject(initialValue, (newVal, oldVal) =>
+						events.change(newVal, oldVal),
+				  )
+				: initialValue,
 		},
 		{
 			get(target, prop) {
@@ -24,6 +31,19 @@ export function mutable<Value extends any>(initialValue?: Value) {
 							events.changeHandler(callback);
 						};
 					default:
+						if (valueType === 'array') {
+							switch (prop) {
+								case 'every':
+								case 'forEach':
+								case 'map':
+								case 'some':
+									return (callback: any) =>
+										mutableFn((data) =>
+											data[prop](callback),
+										)(obj);
+							}
+						}
+
 						return target.value;
 				}
 			},
