@@ -5,16 +5,18 @@ Mutable state, with reactive functions - automatic result recalculations on stat
 [![npm](https://img.shields.io/npm/dt/@mutablejs/core?style=for-the-badge)](https://www.npmjs.com/package/@mutablejs/core) ![GitHub Repo stars](https://img.shields.io/github/stars/mutablejs/core?label=GitHub%20Stars&style=for-the-badge) [![GitHub](https://img.shields.io/github/license/mutablejs/core?color=blue&style=for-the-badge)](https://github.com/mutableJS/core/blob/master/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mutablejs/core?style=for-the-badge) [![Issues](https://img.shields.io/github/issues/mutableJS/core?style=for-the-badge)](https://github.com/mutableJS/core/issues)
 
+[![Support Server](https://img.shields.io/discord/978049671110987856.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://discord.gg/gNdgy8uS3R)
+
 ## FAQ
 
 #### Why was mutableJS created?
 
-Inspired by [Svelte](https://github.com/sveltejs/svelte) and it's custom compiler and change triggering approach, research
+Inspired by the other big front-end frameworks and libraries, like [React](https://reactjs.org/), [Vue.JS](https://vuejs.org/) and friends, research
 on variables mutability has started and developed into the current reactive execution mechanism.
 
 #### Is it ready to use?
 
-At the current stage mutableJS is in research stage and can (thought to) be used with the `@mutablejs/dom` package.
+At the current stage mutableJS is still in research stage and can (thought to) be used with the `@mutablejs/dom` package.
 
 #### Accompanying packages?
 
