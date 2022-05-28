@@ -1,6 +1,7 @@
 import { Mutable } from './types';
 import eventBus from './eventBus';
 import mutableFn from './mutableFn';
+import arrayFns from './_internal/arrayFns';
 
 export function mutable<Value extends any>(initialValue?: Value) {
 	const events = eventBus();
@@ -31,15 +32,15 @@ export function mutable<Value extends any>(initialValue?: Value) {
 						};
 					default:
 						if (valueType === 'array') {
-							switch (prop) {
-								case 'every':
-								case 'forEach':
-								case 'map':
-								case 'some':
-									return (callback: any) =>
-										mutableFn((data) =>
-											data[prop](callback),
-										)(obj);
+							if (
+								arrayFns.includes(
+									prop as typeof arrayFns[number],
+								)
+							) {
+								return (callback: any) =>
+									mutableFn((data) => data[prop](callback))(
+										obj,
+									);
 							}
 						}
 
