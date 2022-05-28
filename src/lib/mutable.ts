@@ -1,5 +1,4 @@
 import { Mutable } from './types';
-import isMutableObjectValue from './utils/isMutableObjectValue';
 import eventBus from './eventBus';
 import mutableFn from './mutableFn';
 
@@ -116,6 +115,17 @@ function mutableObject<Obj extends object | unknown[]>(
 	});
 
 	return proxy;
+}
+
+function isMutableObjectValue(input: unknown): input is object | unknown[] {
+	return (
+		typeof input === 'object' &&
+		!!input &&
+		(('constructor' in input &&
+			input.constructor === Object &&
+			Object.getPrototypeOf(input) === Object.prototype) ||
+			Array.isArray(input))
+	);
 }
 
 export default mutable;
