@@ -2,13 +2,12 @@ import { Mutable } from '../types';
 
 type ObjectFnNames = keyof ObjectFns<any>;
 
-const objectFns: ObjectFnNames[] = ['keys', 'values', 'entries'];
+const objectFns: Set<ObjectFnNames> = new Set(['keys', 'values', 'entries']);
 
 export function isObjectFn(input: any): input is ObjectFnNames {
-	return objectFns.includes(input);
+	return objectFns.has(input);
 }
 
-// TBD: Fix return types
 export type ObjectFns<Values> = {
 	keys(): Mutable<string[]>;
 	values(): Mutable<Values[]>;
