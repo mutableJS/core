@@ -1,7 +1,7 @@
 import { Mutable } from './types';
 import eventBus from './eventBus';
 import mutableFn from './mutableFn';
-import arrayFns from './_internal/arrayFns';
+import arrayFns, { isArrayFn } from './_internal/arrayFns';
 
 export function mutable<Value extends any>(initialValue?: Value) {
 	const events = eventBus();
@@ -32,11 +32,7 @@ export function mutable<Value extends any>(initialValue?: Value) {
 						};
 					default:
 						if (valueType === 'array') {
-							if (
-								arrayFns.includes(
-									prop as typeof arrayFns[number],
-								)
-							) {
+							if (isArrayFn(prop)) {
 								return (callback: any) =>
 									mutableFn((data) => data[prop](callback))(
 										obj,
