@@ -1,7 +1,8 @@
 import { Mutable } from './types';
 import eventBus from './eventBus';
 import mutableFn from './mutableFn';
-import arrayFns, { isArrayFn } from './_internal/arrayFns';
+import { isArrayFn } from './_internal/arrayFns';
+import { isObjectFn } from './_internal/objectFns';
 
 export function mutable<Value extends any>(initialValue?: Value) {
 	const events = eventBus();
@@ -38,6 +39,13 @@ export function mutable<Value extends any>(initialValue?: Value) {
 										obj,
 									);
 							}
+						} else if (valueType === 'object') {
+							if (isObjectFn(prop)) {
+								return () =>
+									mutableFn((data) => Object[prop](data))(
+										obj,
+									);
+							}
 						}
 
 						return target.value;
@@ -59,7 +67,7 @@ export function mutable<Value extends any>(initialValue?: Value) {
 	return obj as Mutable<Value>;
 }
 
-function mutableObject<Obj extends object | unknown[]>(
+function mutableObject<Obj extends Record<string, unknown> | unknown[]>(
 	initialValue: Obj,
 	onChange: (newVal: Obj, oldVal: null) => void,
 ): Obj {
@@ -114,7 +122,9 @@ function mutableObject<Obj extends object | unknown[]>(
 	return proxy;
 }
 
-function isMutableObjectValue(input: unknown): input is object | unknown[] {
+function isMutableObjectValue(
+	input: unknown,
+): input is Record<string, unknown> | unknown[] {
 	return (
 		typeof input === 'object' &&
 		!!input &&
