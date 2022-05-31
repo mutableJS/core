@@ -1,17 +1,13 @@
 import { Mutable } from './types';
 import isRegularObject from './utils/isRegularObject';
-import eventBus from './eventBus';
+import { emit } from './eventBus';
 
 export function mutable<Value extends any>(initialValue?: Value) {
-	const events = eventBus();
-
 	const obj = new Proxy(
 		{
 			value:
 				isRegularObject(initialValue) || Array.isArray(initialValue)
-					? mutableObject(initialValue, (newVal, oldVal) =>
-							events.change(newVal, oldVal),
-					  )
+					? mutableObject(initialValue, handleChange)
 					: initialValue,
 		},
 		{
@@ -19,28 +15,29 @@ export function mutable<Value extends any>(initialValue?: Value) {
 				switch (prop) {
 					case '_mutable':
 						return true;
-					case 'onChange':
-						return (callback: Mutable<Value>['onChange']) => {
-							events.changeHandler(callback);
-						};
 					default:
 						return target.value;
 				}
 			},
-			set(...[target, , value]) {
-				const prevValue = target.value;
+			set(target, prop, value) {
+				const oldVal = target.value;
 
-				if (value !== prevValue) {
+				if (value !== oldVal) {
 					target.value = value;
-					events.change(value, prevValue);
+
+					handleChange(value, oldVal);
 				}
 
 				return true;
 			},
 		},
-	);
+	) as Mutable<Value>;
 
-	return obj as Mutable<Value>;
+	function handleChange(newVal: Value, oldVal: any) {
+		emit(obj, newVal, oldVal);
+	}
+
+	return obj;
 }
 
 function mutableObject<Obj extends object | unknown[]>(

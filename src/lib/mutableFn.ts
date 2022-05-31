@@ -1,6 +1,7 @@
 import { MaybeMutable, Mutable } from './types';
 import mutable from './mutable';
 import isMutable from './isMutable';
+import { listen } from './eventBus';
 
 type MaybeMutableTuple<Input extends [...any[]]> = Input extends [
 	infer First,
@@ -30,7 +31,7 @@ export function mutableFn<Params extends any[], ReturnType>(
 		const pureParams = [] as unknown as Params;
 		params.forEach((arg, i) => {
 			if (isMutable(arg)) {
-				arg.onChange((newVal) => {
+				listen(arg, (newVal) => {
 					pureParams[i] = newVal;
 
 					rerun();
@@ -42,7 +43,7 @@ export function mutableFn<Params extends any[], ReturnType>(
 
 				Object.entries(arg).forEach(([key, item]) => {
 					if (isMutable(item)) {
-						item.onChange((newVal) => {
+						listen(item, (newVal) => {
 							pureParams[i][key] = newVal;
 
 							rerun();

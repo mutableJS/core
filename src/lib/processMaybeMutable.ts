@@ -1,12 +1,13 @@
 import { MaybeMutable } from './types';
 import isMutable from './isMutable';
+import { listen } from './eventBus';
 
 export function processMaybeMutable<Data extends any>(
 	actionFn: (data: Data) => void,
 ) {
 	return (data: MaybeMutable<Data>) => {
 		if (isMutable(data)) {
-			data.onChange(actionFn);
+			listen(data, actionFn);
 
 			actionFn(data.value);
 		} else if (data) {

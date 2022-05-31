@@ -1,22 +1,18 @@
-// TBD: Events clean up needed?
+import { Mutable } from './types';
 
-export type MutationCallback<Value = any> = (newVal: Value, oldVal: Value) => void;
+type Callback<T> = (newVal: T, oldVal: T) => void;
 
-function eventBus() {
-	const refs: MutationCallback[] = [];
+const eventBus = new WeakMap<object, Callback<any>[]>();
 
-	const change: MutationCallback = (...data) => {
-		refs.forEach((fn) => fn(...data));
-	};
+export function listen<T>(mutable: Mutable<T>, callback: Callback<T>) {
+	const listeners = eventBus.get(mutable) || [];
+	listeners.push(callback);
 
-	const changeHandler = (callback: MutationCallback) => {
-		refs.push(callback);
-	};
-
-	return {
-		change,
-		changeHandler,
-	};
+	eventBus.set(mutable, listeners);
 }
 
-export default eventBus;
+export function emit<T>(mutable: Mutable<T>, newVal: T, oldVal?: T) {
+	eventBus.get(mutable)?.forEach((fn) => {
+		fn(newVal, oldVal);
+	});
+}
