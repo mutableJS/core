@@ -16,11 +16,12 @@ on variables mutability has started and developed into the current reactive exec
 
 #### Is it ready to use?
 
-At the current stage mutableJS is still in research stage and can (thought to) be used with the `@mutablejs/dom` package.
+The package is still pretty experimental, but is already used in some small usable web-apps.\
+`@mutablejs/core` is primarily used with the [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) package, see the [Starter Repository](https://github.com/mutableJS/template-starter-typescript).
 
 #### Accompanying packages?
 
-Currently there is 1 more package: [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) and 1 more repo: [mutableJS / Demo repo](https://github.com/mutableJS/demo).
+Currently there is 1 more package: [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) and 2 more repos: [mutableJS / TypeScript Starter Template](https://github.com/mutableJS/template-starter-typescript), [mutableJS / Demo Repo](https://github.com/mutableJS/demo).
 
 ## Installation
 
