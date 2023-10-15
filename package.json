@@ -1,6 +1,6 @@
 {
 	"name": "@mutablejs/core",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Mutable state, with reactive functions - automatic recalculations on state changes",
 	"keywords": [
 		"mutable state",
@@ -19,11 +19,11 @@
 		"dist"
 	],
 	"main": "./dist/index.umd.js",
-	"module": "./dist/index.es.js",
+	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/index.es.js",
+			"import": "./dist/index.mjs",
 			"require": "./dist/index.umd.js"
 		}
 	},
@@ -39,12 +39,12 @@
 	},
 	"license": "MIT",
 	"devDependencies": {
-		"@types/node": "^17.0.38",
-		"typescript": "^4.7.2",
-		"vite": "^2.9.9"
+		"@types/node": "^20.8.6",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.11"
 	},
 	"engines": {
-		"node": ">=17.0.0"
+		"node": "^14.18.0 || >=16.0.0"
 	},
 	"dependencies": {}
 }
