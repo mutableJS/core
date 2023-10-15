@@ -121,3 +121,12 @@ delete someMutableObject.value.a; // Console should print `Value changed to: { b
 
 Any feedback? Join our [Discord server](https://discord.gg/gNdgy8uS3R) and reach out to us.\
 We are open to suggestions, ideas and collaboration.
+
+## Support
+
+Love open source? Enjoying my project?\
+Your support can keep the momentum going! Consider a donation to fuel the creation of more innovative open source software.
+
+| via Ko-Fi                                                                         | Buy me a coffee                                                                                                                                                 | via PayPal                                                                                                                                                             |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y2ALMG) | <a href="https://www.buymeacoffee.com/donnikitos" target="_blank"><img src="https://nititech.de/donate-buymeacoffee.png" alt="Buy Me A Coffee" width="174"></a> | <a href="https://www.paypal.com/donate/?hosted_button_id=EPXZPRTR7JHDW" target="_blank"><img src="https://nititech.de/donate-paypal.png" alt="PayPal" width="174"></a> |
