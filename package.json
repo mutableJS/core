@@ -18,18 +18,27 @@
 	"files": [
 		"dist"
 	],
-	"main": "./dist/index.umd.js",
+	"type": "module",
+	"main": "./dist/index.mjs",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.umd.js"
+			"require": {
+				"types": "./dist/index.d.cts",
+				"default": "./dist/index.cjs"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.mjs"
 		}
 	},
 	"scripts": {
 		"start": "npx vite",
-		"build": "npx vite build && npx tsc --emitDeclarationOnly",
+		"build": "npx unbuild",
 		"prepack": "npm run build"
 	},
 	"author": "Nikita 'donnikitos' Nitichevski <me@donnikitos.com> (https://donnikitos.com/)",
