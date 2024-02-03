@@ -1,27 +1,11 @@
 # mutableJS / Core
 
-Mutable state, with reactive functions - automatic result recalculations on state changes
-
 [![npm](https://img.shields.io/npm/dt/@mutablejs/core?style=for-the-badge)](https://www.npmjs.com/package/@mutablejs/core) ![GitHub Repo stars](https://img.shields.io/github/stars/mutablejs/core?label=GitHub%20Stars&style=for-the-badge) [![GitHub](https://img.shields.io/github/license/mutablejs/core?color=blue&style=for-the-badge)](https://github.com/mutableJS/core/blob/master/LICENSE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mutablejs/core?style=for-the-badge) [![Issues](https://img.shields.io/github/issues/mutableJS/core?style=for-the-badge)](https://github.com/mutableJS/core/issues)
 
 [![Support Server](https://img.shields.io/discord/978049671110987856.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://discord.gg/gNdgy8uS3R)
 
-## FAQ
-
-#### Why was mutableJS created?
-
-Inspired by the other big front-end frameworks and libraries, like [React](https://reactjs.org/), [Vue.JS](https://vuejs.org/) and friends, research
-on variables mutability has started and developed into the current reactive execution mechanism.
-
-#### Is it ready to use?
-
-The package is still pretty experimental, but is already used in some small usable web-apps.\
-`@mutablejs/core` is primarily used with the [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) package, see the [Starter Repository](https://github.com/mutableJS/template-starter-typescript).
-
-#### Accompanying packages?
-
-Currently there is 1 more package: [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) and 2 more repos: [mutableJS / TypeScript Starter Template](https://github.com/mutableJS/template-starter-typescript), [mutableJS / Demo Repo](https://github.com/mutableJS/demo).
+Mutable state, with reactive functions - automatic result recalculations on state changes.
 
 ## Installation
 
@@ -112,6 +96,22 @@ someMutableObject.value.b = 'Changed'; // Console should print `Value changed to
 someMutableObject.value.a = 'Data'; // Console should print `Value changed to: { a: 'Data', b: 'Changed' }`
 delete someMutableObject.value.a; // Console should print `Value changed to: { b: 'Changed' }`
 ```
+
+## FAQ
+
+#### Why was mutableJS created?
+
+Inspired by the other big front-end frameworks and libraries, like [React](https://reactjs.org/), [Vue.JS](https://vuejs.org/) and friends, research
+on variables mutability has started and developed into the current reactive execution mechanism.
+
+#### Is it ready to use?
+
+The package is still pretty experimental, but is already used in some small usable web-apps.\
+`@mutablejs/core` is primarily used with the [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) package, see the [Starter Repository](https://github.com/mutableJS/template-starter-typescript).
+
+#### Accompanying packages?
+
+Currently there is 1 more package: [@mutablejs/dom](https://www.npmjs.com/package/@mutablejs/dom) and 2 more repos: [mutableJS / TypeScript Starter Template](https://github.com/mutableJS/template-starter-typescript), [mutableJS / Demo Repo](https://github.com/mutableJS/demo).
 
 ## Authors
 
